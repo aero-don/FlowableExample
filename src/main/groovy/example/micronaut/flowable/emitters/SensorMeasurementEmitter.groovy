@@ -15,20 +15,20 @@ import javax.inject.Singleton
 class SensorMeasurementEmitter {
     static final Logger logger = LoggerFactory.getLogger(SensorMeasurementEmitter.class);
 
-    Set<FlowableEmitter<SensorMeasurement>> sensorMeasurmentEmitters = []
+    Set<FlowableEmitter<SensorMeasurement>> sensorMeasurementEmitters = []
 
     FlowableOnSubscribe<SensorMeasurement> sensorMeasurementSource = new FlowableOnSubscribe<SensorMeasurement>() {
         @Override
         void subscribe(@NonNull FlowableEmitter<SensorMeasurement> emitter) throws Exception {
             logger.info("sensorMeasurementFlowableOnSubscribe subscribe called")
-            sensorMeasurmentEmitters << emitter
+            sensorMeasurementEmitters << emitter
         }
     }
 
     void publishSensorMeasurementEvent(SensorMeasurement SensorMeasurement) {
         Set<FlowableEmitter<SensorMeasurement>> cancelledSensorMeasurementEmitters = []
-        logger.info("${sensorMeasurmentEmitters.size()} SensorMeasurementEmitters, Published SensorMeasurement event: ${SensorMeasurement} ")
-        sensorMeasurmentEmitters.each { sensorMeasurementEmitter ->
+        logger.info("${sensorMeasurementEmitters.size()} SensorMeasurementEmitters, Published SensorMeasurement event: ${SensorMeasurement} ")
+        sensorMeasurementEmitters.each { sensorMeasurementEmitter ->
             if (sensorMeasurementEmitter.isCancelled()) {
                 cancelledSensorMeasurementEmitters << sensorMeasurementEmitter
             } else {
@@ -36,7 +36,7 @@ class SensorMeasurementEmitter {
             }
         }
         if (cancelledSensorMeasurementEmitters.size()) {
-            sensorMeasurmentEmitters -= cancelledSensorMeasurementEmitters
+            sensorMeasurementEmitters -= cancelledSensorMeasurementEmitters
         }
     }
 
