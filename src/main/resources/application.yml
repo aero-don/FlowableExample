@@ -1,3 +1,9 @@
 micronaut:
   application:
     name: flowable
+  server:
+    cors:
+      enabled: true
+sensor:
+  measurement:
+    rate: 1000 # milliseconds
