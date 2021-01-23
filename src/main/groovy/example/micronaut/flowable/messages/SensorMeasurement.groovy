@@ -11,10 +11,12 @@ class SensorMeasurement {
     String id
     String type // will be enum later
     Double value
+    Long timestamp
 
-    SensorMeasurement(String id, String type, Double value) {
+    SensorMeasurement(String id, String type, Double value, Long timestamp) {
         this.id = id
         this.type = type
         this.value = value
+        this.timestamp = timestamp
     }
 }

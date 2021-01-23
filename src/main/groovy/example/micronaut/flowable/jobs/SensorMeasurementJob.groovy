@@ -6,6 +6,8 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import java.time.Instant
+
 
 @CompileStatic
 //@Singleton
@@ -29,6 +31,6 @@ class SensorMeasurementJob implements Runnable {
     @Override
     void run() {
         sensorMeasurementEmitter.publishSensorMeasurementEvent(
-                new SensorMeasurement(SENSOR_ID, SENSOR_TYPE, ++numberEmitted as Double))
+                new SensorMeasurement(SENSOR_ID, SENSOR_TYPE, ++numberEmitted as Double, Instant.now().toEpochMilli()))
     }
 }
