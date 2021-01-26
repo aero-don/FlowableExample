@@ -8,4 +8,4 @@ sensor:
   measurement:
     rate: 1000 # milliseconds
     log:
-      rate: 10 # seconds
+      rate: 1 # seconds
