@@ -30,7 +30,7 @@ class SensorMeasurementJob implements Runnable {
     // @Scheduled(fixedRate = "10ms")
     @Override
     void run() {
-        sensorMeasurementEmitter.publishSensorMeasurementEvent(
+        sensorMeasurementEmitter.publishSensorMeasurement(
                 new SensorMeasurement(SENSOR_ID, SENSOR_TYPE, ++numberEmitted as Double, Instant.now().toEpochMilli()))
     }
 }

@@ -60,11 +60,11 @@ class SensorMeasurementEmitter {
         }
     }
 
-    void publishSensorMeasurementEvent(SensorMeasurement sensorMeasurement) {
+    void publishSensorMeasurement(SensorMeasurement sensorMeasurement) {
         Set<FlowableEmitter<SensorMeasurement>> cancelledSensorMeasurementEmitters = []
 
         if (sensorMeasurement.value as Integer % (((sensorMeasurementLogRate * 1000) / sensorMeasurementRate) as Integer) == 0) {
-            logger.info("${sensorMeasurementEmitters.size()} SensorMeasurementEmitters, Published sensorMeasurement event: ${sensorMeasurement} ")
+            logger.info("${sensorMeasurementEmitters.size()} SensorMeasurementEmitters, Published sensorMeasurement: ${sensorMeasurement} ")
         }
 
         sensorMeasurementEmitters.each { sensorMeasurementEmitter ->
