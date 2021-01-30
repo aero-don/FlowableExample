@@ -29,8 +29,8 @@ class SensorMeasurementService {
     void publishSensorMeasurement(SensorMeasurement sensorMeasurement) {
         sensorMeasurementProcessor.onNext(sensorMeasurement)
 
-        if (logger.isInfoEnabled() && sensorMeasurement.value as Integer % (((sensorMeasurementLogRate * 1000) / sensorMeasurementRate) as Integer) == 0) {
-            logger.info("Published sensorMeasurement: ${sensorMeasurement} ")
+        if (logger.infoEnabled && (sensorMeasurement.value as Integer % (((sensorMeasurementLogRate * 1000) / sensorMeasurementRate) as Integer) == 0)) {
+            logger.info("Published sensorMeasurement: ${sensorMeasurement}")
         }
     }
 }

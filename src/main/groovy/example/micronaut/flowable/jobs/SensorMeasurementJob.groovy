@@ -21,18 +21,18 @@ class SensorMeasurementJob {
     static final String SENSOR_ID = UUID.randomUUID().toString()
     static final String SENSOR_TYPE = 'counter'
 
-    Integer numberEmitted = 0
+    Integer counterValue = 0
 
     @Inject
-    SensorMeasurementService sensorMeasurementEmitter
+    SensorMeasurementService sensorMeasurementService
 
-    SensorMeasurementJob(SensorMeasurementService sensorMeasurementEmitter) {
-        this.sensorMeasurementEmitter = sensorMeasurementEmitter
+    SensorMeasurementJob(SensorMeasurementService sensorMeasurementService) {
+        this.sensorMeasurementService = sensorMeasurementService
     }
 
     @Scheduled(fixedRate = '${sensor.measurement.rate}ms')
     void takeSensorMeasurement() {
-        sensorMeasurementEmitter.publishSensorMeasurement(
-                new SensorMeasurement(SENSOR_ID, SENSOR_TYPE, ++numberEmitted as Double, Instant.now().toEpochMilli()))
+        sensorMeasurementService.publishSensorMeasurement(
+                new SensorMeasurement(SENSOR_ID, SENSOR_TYPE, ++counterValue as Double, Instant.now().toEpochMilli()))
     }
 }
