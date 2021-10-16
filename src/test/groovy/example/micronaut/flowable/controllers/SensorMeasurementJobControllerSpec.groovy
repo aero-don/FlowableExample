@@ -1,16 +1,19 @@
 package example.micronaut.flowable.controllers
 
+import io.micronaut.core.io.buffer.ByteBuffer
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
-import io.micronaut.http.client.RxHttpClient
+import io.micronaut.reactor.http.client.ReactorHttpClient
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
+import reactor.core.publisher.Flux
+import reactor.test.StepVerifier;
 import spock.lang.AutoCleanup
 import spock.lang.Specification
 import spock.lang.Shared
 
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @MicronautTest
 class SensorControllerSpec extends Specification {
@@ -19,13 +22,13 @@ class SensorControllerSpec extends Specification {
     EmbeddedServer embeddedServer
 
     @Shared @AutoCleanup @Inject @Client("/")
-    RxHttpClient client
+    ReactorHttpClient client
 
     void "test index"() {
         given:
-        HttpResponse response = client.toBlocking().exchange("/sensor")
+        Flux<HttpResponse<ByteBuffer>> response = client.exchange("/sensor")
 
         expect:
-        response.status == HttpStatus.OK
+        StepVerifier.create(response.flatMap(res -> res.status())).expectNext(HttpStatus.OK)
     }
 }

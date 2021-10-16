@@ -2,14 +2,17 @@ package example.micronaut.flowable.services
 
 import example.micronaut.flowable.messages.SensorMeasurement
 import groovy.transform.CompileStatic
+
+import jakarta.inject.Singleton
+
 import io.micronaut.context.annotation.Context
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
-import io.reactivex.processors.PublishProcessor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-import javax.inject.Singleton
+import reactor.core.publisher.SignalType
+import reactor.core.publisher.Sinks
+import reactor.util.concurrent.Queues
 
 @CompileStatic
 @Singleton
@@ -24,13 +27,27 @@ class SensorMeasurementService {
     @Property(name = 'sensor.measurement.log.rate', value = '1')
     Integer sensorMeasurementLogRate;
 
-    PublishProcessor<SensorMeasurement> sensorMeasurementProcessor = PublishProcessor.create()
+    Sinks.Many<SensorMeasurement> sensorMeasurementSink = Sinks.many().multicast().directAllOrNothing() //.onBackpressureBuffer(1, false)
 
     void publishSensorMeasurement(SensorMeasurement sensorMeasurement) {
-        sensorMeasurementProcessor.onNext(sensorMeasurement)
-
+        sensorMeasurementSink.emitNext(sensorMeasurement,
+                (SignalType signalType, Sinks.EmitResult emitResult) -> {
+                    if (emitResult != Sinks.EmitResult.FAIL_ZERO_SUBSCRIBER) {
+                        logger.error("Failed: sensorMeasurementSink.emitNext(sensorMeasurement): ${sensorMeasurement}, signalType=${signalType}, emitResult=${emitResult}")
+                    }
+                })
         if (logger.infoEnabled && (sensorMeasurement.value as Integer % (((sensorMeasurementLogRate * 1000) / sensorMeasurementRate) as Integer) == 0)) {
             logger.info("Published sensorMeasurement: ${sensorMeasurement}")
         }
+
+//        if (sensorMeasurementSink.tryEmitNext(sensorMeasurement) == Sinks.EmitResult.OK) {
+//            if (logger.infoEnabled && (sensorMeasurement.value as Integer % (((sensorMeasurementLogRate * 1000) / sensorMeasurementRate) as Integer) == 0)) {
+//                logger.info("Published sensorMeasurement: ${sensorMeasurement}")
+//            }
+//        } else {
+//            logger.error("Failed tryEmitNext, sensorMeasurement=${sensorMeasurement}")
+//
+//        }
+
     }
 }
