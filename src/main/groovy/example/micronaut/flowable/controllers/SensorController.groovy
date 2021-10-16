@@ -24,7 +24,7 @@ class SensorController {
     @ExecuteOn(TaskExecutors.IO)
     @Get(uri = '/measurements', produces = MediaType.APPLICATION_JSON_STREAM)
     Flux<SensorMeasurement> index() {
-        sensorMeasurementService.sensorMeasurementSink.asFlux().onBackpressureBuffer()
+        sensorMeasurementService.sensorMeasurementFlux
     }
 
 }
